@@ -28,13 +28,8 @@ public class BaseEmailService implements EmailService {
     }
 
     @Override
-    public Map<String,EmailNotifierException> sendEmailWithAttachments(List<Attachment> attachments, String... emailAddresses) throws EmailNotifierException {
-        return worker.sendEmailWithAttachments(attachments, emailAddresses);
-    }
-
-    @Override
-    public Map<String,EmailNotifierException> sendEmailWithAttachments(Attachment attachment, String... emailAddresses) throws EmailNotifierException {
-        return worker.sendEmailWithAttachment(attachment, emailAddresses);
+    public Map<String,EmailNotifierException> sendEmailWithAttachments(String message, Attachment attachment, String... emailAddresses) throws EmailNotifierException {
+        return worker.sendEmailWithAttachment(message, attachment, emailAddresses);
     }
 
     @Override

@@ -1,9 +1,6 @@
 package ru.home.emailnotifier.worker;
 
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.home.emailnotifier.authholder.AuthenticationHolder;
@@ -11,6 +8,7 @@ import ru.home.emailnotifier.exception.EmailNotifierException;
 import ru.home.emailnotifier.utils.Attachment;
 import ru.home.emailnotifier.utils.Constants;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,17 +41,37 @@ public class BaseEmailWorker implements EmailWorker {
 
     @Override
     public Map<String, EmailNotifierException> sendHtmlTextEmail(String htmlMessage, String... emailAddresses) throws EmailNotifierException {
-        return null;
+        try{
+            Email emailTemplate = buildHtmlTextEmail(htmlMessage, authenticationHolder);
+            return send(emailTemplate, emailAddresses);
+        }catch(EmailException e){
+            throw new EmailNotifierException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public Map<String, EmailNotifierException> sendEmailWithAttachments(List<Attachment> attachments, String... emailAddresses) throws EmailNotifierException {
-        return null;
+    public Map<String, EmailNotifierException> sendEmailWithAttachment(String message, Attachment attachment, String... emailAddresses) throws EmailNotifierException {
+        try{
+            Email emailTemplate = buildEmailWithAttach(message, attachment, authenticationHolder);
+            return send(emailTemplate, emailAddresses);
+        }catch(Exception e){
+            logger.error("Cannot create emailTemplate!", e);
+            throw new EmailNotifierException(e.getMessage(), e);
+        }
     }
 
-    @Override
-    public Map<String, EmailNotifierException> sendEmailWithAttachment(Attachment attachment, String... emailAddresses) throws EmailNotifierException {
-        return null;
+    private Email buildEmailWithAttach(String message, Attachment attachment, AuthenticationHolder holder) throws EmailException, IOException {
+        MultiPartEmail email = new MultiPartEmail();
+        ByteArrayDataSource dataSource = new ByteArrayDataSource(attachment.getInputStream(), attachment.getType().getApplicationType());
+        email.attach(dataSource, attachment.getAttachmentName(), attachment.getAttachmentDescription());
+        email.setHostName(holder.getHost());
+        email.setSmtpPort(Constants.SMTP_PORT);
+        email.setAuthenticator(new DefaultAuthenticator(holder.getUsername(), holder.getPassword()));
+        email.setFrom(holder.getFrom());
+        email.setSubject(holder.getSubject());
+        email.setMsg(message);
+        email.setSSL(true);
+        return email;
     }
 
     protected Email buildPlainTextEmail(String message, AuthenticationHolder holder) throws EmailException {
@@ -64,6 +82,18 @@ public class BaseEmailWorker implements EmailWorker {
         email.setFrom(holder.getFrom());
         email.setSubject(holder.getSubject());
         email.setMsg(message);
+        email.setSSL(true);
+        return email;
+    }
+
+    protected Email buildHtmlTextEmail(String message, AuthenticationHolder holder) throws EmailException {
+        HtmlEmail email = new HtmlEmail();
+        email.setHostName(holder.getHost());
+        email.setSmtpPort(Constants.SMTP_PORT);
+        email.setAuthenticator(new DefaultAuthenticator(holder.getUsername(), holder.getPassword()));
+        email.setFrom(holder.getFrom());
+        email.setSubject(holder.getSubject());
+        email.setHtmlMsg(message);
         email.setSSL(true);
         return email;
     }
