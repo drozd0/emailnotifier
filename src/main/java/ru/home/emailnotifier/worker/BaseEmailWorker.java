@@ -60,7 +60,7 @@ public class BaseEmailWorker implements EmailWorker {
         }
     }
 
-    private Email buildEmailWithAttach(String message, Attachment attachment, AuthenticationHolder holder) throws EmailException, IOException {
+    private Email buildEmailWithAttach(String message, Attachment attachment, AuthenticationHolder holder) throws EmailException, IOException, EmailNotifierException {
         MultiPartEmail email = new MultiPartEmail();
         ByteArrayDataSource dataSource = new ByteArrayDataSource(attachment.getInputStream(), attachment.getType().getApplicationType());
         email.attach(dataSource, attachment.getAttachmentName(), attachment.getAttachmentDescription());
@@ -74,7 +74,7 @@ public class BaseEmailWorker implements EmailWorker {
         return email;
     }
 
-    protected Email buildPlainTextEmail(String message, AuthenticationHolder holder) throws EmailException {
+    protected Email buildPlainTextEmail(String message, AuthenticationHolder holder) throws EmailException, EmailNotifierException {
         Email email = new SimpleEmail();
         email.setHostName(holder.getHost());
         email.setSmtpPort(Constants.SMTP_PORT);
@@ -86,7 +86,7 @@ public class BaseEmailWorker implements EmailWorker {
         return email;
     }
 
-    protected Email buildHtmlTextEmail(String message, AuthenticationHolder holder) throws EmailException {
+    protected Email buildHtmlTextEmail(String message, AuthenticationHolder holder) throws EmailException, EmailNotifierException {
         HtmlEmail email = new HtmlEmail();
         email.setHostName(holder.getHost());
         email.setSmtpPort(Constants.SMTP_PORT);

@@ -1,5 +1,8 @@
 package ru.home.emailnotifier.authholder;
 
+import org.apache.commons.mail.Email;
+import ru.home.emailnotifier.exception.EmailNotifierException;
+
 public class SimpleAuthenticationHolder implements AuthenticationHolder {
     private String username;
     private String password;
@@ -21,26 +24,25 @@ public class SimpleAuthenticationHolder implements AuthenticationHolder {
     }
 
     @Override
-    public String getUsername() {
+    public String getUsername() throws EmailNotifierException{
         return this.username;
     }
 
-    @Override
-    public void setUsername(String username) {
+    public void setUsername(String username){
         this.username = username;
     }
 
     @Override
-    public String getPassword() {
+    public String getPassword() throws EmailNotifierException {
         return this.password;
     }
 
-    @Override
-    public void setPassword(String password) {
+    public void setPassword(String password) throws EmailNotifierException {
         this.password = password;
     }
 
-    public String getHost() {
+    @Override
+    public String getHost()  {
         return host;
     }
 
@@ -48,7 +50,8 @@ public class SimpleAuthenticationHolder implements AuthenticationHolder {
         this.host = host;
     }
 
-    public String getFrom() {
+    @Override
+    public String getFrom() throws EmailNotifierException {
         return from;
     }
 
@@ -56,7 +59,7 @@ public class SimpleAuthenticationHolder implements AuthenticationHolder {
         this.from = from;
     }
 
-    public String getSubject() {
+    public String getSubject() throws EmailNotifierException {
         return subject;
     }
 
