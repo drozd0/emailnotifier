@@ -18,18 +18,18 @@ public class BaseEmailService implements EmailService {
     }
 
     @Override
-    public Map<String,EmailNotifierException> sendPlainTextEmail(String message, String... emailAddresses) throws EmailNotifierException {
-        return worker.sendPlainTextEmail(message, emailAddresses);
+    public void sendPlainTextEmail(String message, String email) throws EmailNotifierException {
+        worker.sendPlainTextEmail(message, email);
     }
 
     @Override
-    public Map<String,EmailNotifierException> sendHtmlEmail(String message, String... emailAddresses) throws EmailNotifierException {
-        return worker.sendHtmlTextEmail(message, emailAddresses);
+    public void sendHtmlEmail(String message, String email) throws EmailNotifierException {
+        worker.sendHtmlTextEmail(message, email);
     }
 
     @Override
-    public Map<String,EmailNotifierException> sendEmailWithAttachments(String message, Attachment attachment, String... emailAddresses) throws EmailNotifierException {
-        return worker.sendEmailWithAttachment(message, attachment, emailAddresses);
+    public void sendEmailWithAttachments(String message, Attachment attachment, String email) throws EmailNotifierException {
+        worker.sendEmailWithAttachment(message, attachment, email);
     }
 
     @Override

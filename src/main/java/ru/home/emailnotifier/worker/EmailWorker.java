@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface EmailWorker {
     void setAuthenticationHolder(AuthenticationHolder authenticationHolder);
-    Map<String,EmailNotifierException> sendPlainTextEmail(String message, String...emailAddresses) throws EmailNotifierException;
-    Map<String,EmailNotifierException> sendHtmlTextEmail(String htmlMessage, String...emailAddresses) throws EmailNotifierException;
-    Map<String,EmailNotifierException> sendEmailWithAttachment(String message, Attachment attachment, String...emailAddresses) throws EmailNotifierException;
+    void sendPlainTextEmail(String message, String email) throws EmailNotifierException;
+    void sendHtmlTextEmail(String htmlMessage, String email) throws EmailNotifierException;
+    void sendEmailWithAttachment(String message, Attachment attachment, String email) throws EmailNotifierException;
 }
