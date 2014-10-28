@@ -5,8 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.home.emailnotifier.exception.EmailNotifierException;
 import ru.home.emailnotifier.utils.Constants;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class FileAuthenticationHolder implements AuthenticationHolder {
@@ -20,64 +19,70 @@ public class FileAuthenticationHolder implements AuthenticationHolder {
 
     public FileAuthenticationHolder(String filePath){
         this.filePath = filePath;
-        buildPropertiesHolder(filePath);
     }
 
     public void setFilePath(String filePath) {
-        this.filePath = filePath;
-        buildPropertiesHolder(filePath);
+         this.filePath = filePath;
     }
 
-    private void buildPropertiesHolder(String filePath) {
-        InputStream inputStream = null;
-        try{
-            inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
-            propertiesHolder.load(inputStream);
-        }catch(IOException e){
-            logger.error(" ", e);
+    /**
+     * Invoke after setFilePath().
+     */
+    public void reloadProperties() {
+        InputStream stream = null;
+        try {
+            logger.debug("Into reloadProperties.");
+            propertiesHolder = new Properties();
+            if(filePath == null)
+                stream = getClass().getClassLoader().getResourceAsStream(Constants.EMAIL_CONFIG_FILE);
+            else
+                stream = new FileInputStream(filePath);
+            propertiesHolder.load(stream);
+        } catch (IOException e) {
+            logger.error("Cannot reload properties.", e);
         }finally {
-            if(inputStream != null)
+            if(stream != null){
                 try {
-                    inputStream.close();
+                    stream.close();
                 } catch (IOException e) {
-                    logger.error("Cannot close input stream of file[{}]", filePath, e);
+                    logger.error("Failed cloase input stream.", e);
                 }
+            }
         }
-
     }
 
     @Override
-    public String getUsername() throws EmailNotifierException{
-        if(propertiesHolder.isEmpty())
-            throw new EmailNotifierException("username cannot be undetermined!");
+    public String getUsername(){
+        if(null == propertiesHolder)
+            reloadProperties();
         return propertiesHolder.getProperty(Constants.USERNAME);
     }
 
     @Override
-    public String getPassword() throws EmailNotifierException{
-        if(propertiesHolder.isEmpty())
-            throw new EmailNotifierException("password cannot be undetermined!");
+    public String getPassword(){
+        if(null == propertiesHolder)
+            reloadProperties();
         return propertiesHolder.getProperty(Constants.PASSWORD);
     }
 
     @Override
-    public String getHost() throws EmailNotifierException{
-        if(propertiesHolder.isEmpty())
-            throw new EmailNotifierException("host cannot be undetermined!");
+    public String getHost(){
+        if(null == propertiesHolder)
+            reloadProperties();
         return propertiesHolder.getProperty(Constants.HOST);
     }
 
     @Override
-    public String getFrom() throws EmailNotifierException{
-        if(propertiesHolder.isEmpty())
-            throw new EmailNotifierException("from cannot be undetermined!");
+    public String getFrom(){
+        if(null == propertiesHolder)
+            reloadProperties();
         return propertiesHolder.getProperty(Constants.FROM);
     }
 
     @Override
-    public String getSubject() throws EmailNotifierException{
-        if(propertiesHolder.isEmpty())
-            throw new EmailNotifierException("subject cannot be undetermined!");
+    public String getSubject(){
+        if(null == propertiesHolder)
+            reloadProperties();
         return propertiesHolder.getProperty(Constants.SUBJECT);
     }
 }

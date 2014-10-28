@@ -7,4 +7,5 @@ public class Constants {
     public static final java.lang.String HOST = "host";
     public static final java.lang.String FROM = "from";
     public static final java.lang.String SUBJECT = "subject";
+    public static final String EMAIL_CONFIG_FILE = "email_config.properties";
 }

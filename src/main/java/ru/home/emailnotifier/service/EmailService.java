@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface EmailService {
-    void sendPlainTextEmail(String message, String email) throws EmailNotifierException;
-    void sendHtmlEmail(String message, String email) throws EmailNotifierException;
-    void sendEmailWithAttachments(String message, Attachment attachment, String email) throws EmailNotifierException;
+    void sendPlainTextEmail(String message, String subject, String email) throws EmailNotifierException;
+    void sendHtmlEmail(String message, String subject, String email) throws EmailNotifierException;
+    void sendEmailWithAttachments(String message, String subject, Attachment attachment, String email) throws EmailNotifierException;
     void setEmailWorker(EmailWorker worker);
 }
